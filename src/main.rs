@@ -5,7 +5,8 @@ mod players;
 
 fn main() {
     use players::example_bot::ExampleBot;
-    use players::bot_template::BotTemplate;
-    let mut game: GameEngine<ExampleBot, BotTemplate> = GameEngine::new();
+    // use players::bot_template::BotTemplate;
+    use players::human_controlled_bot::HumanControlledBot;
+    let mut game: GameEngine<ExampleBot, HumanControlledBot> = GameEngine::new();
     game.run_game();
 }

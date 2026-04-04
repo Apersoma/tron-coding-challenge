@@ -1,2 +1,3 @@
 pub mod example_bot;
 pub mod bot_template;
+pub mod human_controlled_bot;
