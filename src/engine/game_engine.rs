@@ -14,13 +14,14 @@ impl<A: Bot, B: Bot> GameEngine<A, B> {
         }
     }
     /// returns true if game not over
-    fn go_to_next_frame(&mut self) -> bool {
+    pub fn go_to_next_frame(&mut self) -> bool {
         self.game_state.go_to_next_frame(
             self.player_a_bot.next_action(&self.game_state),
             self.player_b_bot.next_action(&self.game_state),
         )
     }
-    fn print_current_game_state(&self) {
+
+    pub fn print_current_game_state(&self){
         println!("{}", self.game_state)
     }
     pub fn run_game(&mut self) {

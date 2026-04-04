@@ -1,5 +1,7 @@
 use std::fmt::Display;
 
+use crate::engine::prelude::*;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct PlayerId(bool);
 impl PlayerId {
@@ -17,6 +19,10 @@ impl PlayerId {
     }
     pub fn other(&self) -> Self {
         PlayerId(!self.0)
+    }
+    
+    pub fn get_head_pos(&self, grid: &Grid)->GridPosition{
+        grid.player_head_position(*self)
     }
 }
 impl Display for PlayerId {
