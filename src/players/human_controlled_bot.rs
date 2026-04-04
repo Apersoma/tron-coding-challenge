@@ -1,12 +1,10 @@
 use crate::engine::prelude::*;
 
-pub struct HumanControlledBot{
-    my_player_id: PlayerId
-}
+pub struct HumanControlledBot;
 
 impl Bot for HumanControlledBot{
-    fn new(my_player_id: PlayerId)->Self {
-        HumanControlledBot{my_player_id}
+    fn new(_my_player_id: PlayerId)->Self {
+        HumanControlledBot
     }
 
     fn next_action(&mut self, _game_state: &GameState) -> Direction {
