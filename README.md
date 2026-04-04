@@ -26,23 +26,26 @@ If you sudo rm -rf my computer I will be angry with you.
 ## Some functions or types that might be a good place to start looking:
 
 ### Types
-GridPosition - Represents a position that is in bounds in the grid
-Direction - Represents either up, down, left or right. (PositiveY, NegativeY, NegativeX, PositiveX respectively) (positive y is up, positive x is right)
-Grid - Represents the state of a grid and all the cells in it
-GridCell - represents a single cell of the grid. Either empty, a players tail, or a players head. It also contains the direction the player was moving when they left that tail. (does not store its own position)
-GameState - represents the current gamestate, containing the current grid and all previous grids. As well as weather or not the game is ended.
-PlayerId - Either player X or player O
+- GridPosition - Represents a position that is in bounds in the grid
+- Direction - Represents either up, down, left or right. (PositiveY, NegativeY, NegativeX, PositiveX respectively) (positive y is up, positive x is right)
+- Grid - Represents the state of a grid and all the cells in it
+- GridCell - represents a single cell of the grid. Either empty, a players tail, or a players head. It also contains the direction the player was moving when they left that tail. (does not store its own position)
+- GameState - represents the current gamestate, containing the current grid and all previous grids. As well as weather or not the game is ended.
+- PlayerId - Either player X or player O
 
 
 ### Functions
-game_state.current_grid()->&Grid returns the current grid
-grid.get_cell(position)->&GridCell returns the cell at a position (so does position.get_cell(grid)->&GridCell)
-grid.player_head_positions()->(GridPosition, GridPosition) returns a tuple of (Player Os position, Player Xs position)
-cell.is_empty()->bool returns true if the cell is empty
-cell.is_players_head(player)->bool returns true if the cell represents the given players head
-game_state.current_time()->usize returns the frame number this game is up to
+- game_state.current_grid()->&Grid returns the current grid
+- grid.get_cell(position)->&GridCell returns the cell at a position (so does position.get_cell(grid)->&GridCell)
+- grid.player_head_positions()->(GridPosition, GridPosition) returns a tuple of (Player Os position, Player Xs position)
+- cell.is_empty()->bool returns true if the cell is empty
+- cell.is_players_head(player)->bool returns true if the cell represents the given players head
+- game_state.current_time()->usize returns the frame number this game is up to
 
-More complex ones ---
-position.after_moved(direction)->Option<GridPosition> returns a position adjacent to the input position in a given direction
-GridPosition::iter_positions() returns an iterator over all positions
-game_state.grid_history() returns an iterator over all grids in the history in order since the start of the game
+More complex functions ---
+- position.after_moved(direction)->Option<GridPosition> returns a position adjacent to the input position in a given direction
+- GridPosition::iter_positions() returns an iterator over all positions
+- game_state.grid_history() returns an iterator over all grids in the history in order since the start of the game
+
+
+If there is some function I obviously should implement in the engine code that hasnt been implemented feel free to add it and make a PR, but no promises ill add it (I am not adding a call chatgpt api function to the engine)
