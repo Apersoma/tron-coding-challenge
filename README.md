@@ -13,6 +13,7 @@ WARNING! Example bot heavily uses the iterator feature of rust which may not be 
 - The grid is 21 by 21 with players starting adjacent to the center of the grid.
 - Each cell of the grid can either be the head of either player, the tail of either player, or empty
 - If your bots head ever collides with a tail, or the edge of the grid, or another players head, you lose. If both players do this at the same time it is a draw. (Colliding here means your bot inputs a direction that would cause an overlap)
+- Your bot cannot require human input after the program starts executing
 
 
 ## Your bot must implement the bot trait
