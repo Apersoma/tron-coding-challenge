@@ -1,6 +1,5 @@
 use crate::engine::prelude::*;
 
-#[repr(transparent)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 /// Represents an in bounds position
 pub struct GridPosition(usize);
@@ -43,6 +42,8 @@ impl GridPosition {
     pub fn all_slice() -> Box<[Self]> {
         Self::iter_positions().collect()
     }
+
+
 
     /// returns a grid position that neighbors self and is in the direction given. None if out of bounds
     pub fn after_moved(&self, direction: Direction) -> Option<Self> {
@@ -87,6 +88,8 @@ impl TryFrom<(usize, usize)> for GridPosition {
         GridPosition::new(value.0, value.1).ok_or(GridPositionOutOfBoundsError)
     }
 }
+
+
 
 pub struct GridPositionIterator(usize);
 impl Iterator for GridPositionIterator {
