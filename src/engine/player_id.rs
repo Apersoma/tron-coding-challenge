@@ -22,8 +22,8 @@ impl PlayerId{
 impl Display for PlayerId{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let player = match self.0 {
-            true => "A",
-            false => "B",
+            true => "O",
+            false => "X",
         };
         write!(f, "{}", player)
     }
