@@ -2,6 +2,7 @@ use crate::{engine::prelude::*, players::{example_bot::ExampleBot, jack_papel_bo
 
 mod engine;
 mod players;
+mod rand;
 use players::lunar::{Lunar, Rngesus};
 
 fn main() {
