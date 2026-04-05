@@ -1,5 +1,6 @@
 use crate::engine::prelude::*;
 
+#[repr(transparent)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 /// Represents an in bounds position
 pub struct GridPosition(usize);
@@ -11,7 +12,7 @@ impl GridPosition {
     }
     pub fn new(x: usize, y: usize) -> Option<GridPosition> {
         if x < GRID_SIZE && y < GRID_SIZE {
-            Some(GridPosition(x as usize + (y * GRID_SIZE) as usize))
+            Some(GridPosition(x + (y * GRID_SIZE)))
         } else {
             None
         }
@@ -70,12 +71,12 @@ impl GridPosition {
 
 impl From<GridPosition> for (usize, usize) {
     fn from(value: GridPosition) -> Self {
-        (value.0 % GRID_SIZE as usize, value.0 / GRID_SIZE as usize)
+        (value.0 % GRID_SIZE, value.0 / GRID_SIZE)
     }
 }
 impl From<&GridPosition> for (usize, usize) {
     fn from(value: &GridPosition) -> Self {
-        (value.0 % GRID_SIZE as usize, value.0 / GRID_SIZE as usize)
+        (value.0 % GRID_SIZE, value.0 / GRID_SIZE)
     }
 }
 pub struct GridPositionOutOfBoundsError;

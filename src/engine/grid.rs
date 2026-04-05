@@ -2,11 +2,13 @@ use crate::engine::prelude::*;
 use std::collections::HashMap;
 
 pub const GRID_SIZE: usize = 21;
+
+#[repr(transparent)]
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Grid([GridCell; GRID_SIZE as usize * GRID_SIZE as usize]);
+pub struct Grid([GridCell; GRID_SIZE * GRID_SIZE]);
 impl Grid {
     pub fn new_default() -> Self {
-        let mut out = Self([const { GridCell::Empty }; GRID_SIZE as usize * GRID_SIZE as usize]);
+        let mut out = Self([const { GridCell::Empty }; GRID_SIZE * GRID_SIZE]);
         *out.try_get_cell_mut((9, 10)).expect("pos is in bounds") =
             GridCell::Head(PlayerId::new_o(), Direction::NegativeX);
         *out.try_get_cell_mut((11, 10)).expect("pos is in bounds") =
@@ -75,19 +77,19 @@ impl Grid {
 
     pub fn get_cell_mut(&mut self, pos: impl Into<GridPosition>) -> &mut GridCell {
         self.0
-            .get_mut(pos.into().i() as usize)
+            .get_mut(pos.into().i())
             .expect("position is in bounds")
     }
     pub fn try_get_cell_mut(&mut self, pos: impl TryInto<GridPosition>) -> Option<&mut GridCell> {
-        self.0.get_mut(pos.try_into().ok()?.i() as usize)
+        self.0.get_mut(pos.try_into().ok()?.i())
     }
     pub fn get_cell(&self, pos: impl Into<GridPosition>) -> &GridCell {
         self.0
-            .get(pos.into().i() as usize)
+            .get(pos.into().i())
             .expect("position is in bounds")
     }
     pub fn try_get_cell(&self, pos: impl TryInto<GridPosition>) -> Option<&GridCell> {
-        self.0.get(pos.try_into().ok()?.i() as usize)
+        self.0.get(pos.try_into().ok()?.i())
     }
 
     pub fn head_positions_map(&self) -> HashMap<PlayerId, GridPosition> {
@@ -140,6 +142,10 @@ impl Grid {
     }
     pub fn cell_is_not_empty(&self, pos: impl Into<GridPosition>) -> bool {
         self.get_cell(pos).is_not_empty()
+    }
+
+    pub fn get_cells(&self) -> &[GridCell; GRID_SIZE * GRID_SIZE] {
+        &self.0
     }
 }
 impl std::fmt::Display for Grid {

@@ -2,6 +2,7 @@ use std::fmt::Display;
 
 use crate::engine::prelude::*;
 
+#[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GridCell {
     Empty,
