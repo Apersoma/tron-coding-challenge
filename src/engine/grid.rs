@@ -15,11 +15,8 @@ impl Grid {
             GridCell::Head(PlayerId::new_x(), Direction::PositiveX);
         out
     }
-    pub fn next_grid(
-        &self,
-        player_a_choice: Direction,
-        player_b_choice: Direction,
-    ) -> NextFrameResult {
+    pub fn next_grid(&self, player_a_choice: Direction, player_b_choice: Direction, next_frame: usize) -> NextFrameResult {
+
         //function is a hot mess
 
         let (a_pos, b_pos) = self.player_head_positions();
@@ -67,8 +64,8 @@ impl Grid {
         };
 
         let mut out = self.clone();
-        *out.get_cell_mut(a_pos) = GridCell::Tail(PlayerId::new_o(), player_a_choice);
-        *out.get_cell_mut(b_pos) = GridCell::Tail(PlayerId::new_x(), player_b_choice);
+        *out.get_cell_mut(a_pos) = GridCell::Tail(PlayerId::new_o(), player_a_choice, next_frame);
+        *out.get_cell_mut(b_pos) = GridCell::Tail(PlayerId::new_x(), player_b_choice, next_frame);
         *out.get_cell_mut(next_a_pos) = GridCell::Head(PlayerId::new_o(), player_a_choice);
         *out.get_cell_mut(next_b_pos) = GridCell::Head(PlayerId::new_x(), player_b_choice);
 

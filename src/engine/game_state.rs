@@ -46,9 +46,7 @@ impl GameState {
             return false;
         }
 
-        let next_frame_result = self
-            .current_grid()
-            .next_grid(player_a_choice, player_b_choice);
+        let next_frame_result = self.current_grid().next_grid(player_a_choice, player_b_choice, self.current_time()+1);
         match next_frame_result {
             NextFrameResult::NextFrame(grid) => {
                 self.grid_history.push(grid);
