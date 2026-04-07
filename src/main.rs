@@ -2,12 +2,14 @@ use crate::engine::prelude::*;
 
 mod engine;
 mod players;
-mod rand;
+use players::lunar::{Lunar, Rngesus};
 
 fn main() {
     use players::example_bot::ExampleBot;
     // use players::bot_template::BotTemplate;
     use players::human_controlled_bot::HumanControlledBot;
-    let mut game: GameEngine<ExampleBot, HumanControlledBot> = GameEngine::new();
-    game.run_game();
+    GameEngine::<ExampleBot, Rngesus<3>>::new().run_game();
+    // GameEngine::<ExampleBot, HumanControlledBot>::new().run_game();
+    GameEngine::<HumanControlledBot, ExampleBot>::new().run_game();
+    // GameEngine::<ExampleBot, Rngesus>::new().run_game();
 }
