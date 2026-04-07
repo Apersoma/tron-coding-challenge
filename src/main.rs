@@ -1,8 +1,8 @@
+#![allow(unused_imports)]
 use crate::{engine::prelude::*, players::{example_bot::ExampleBot, jack_papel_bots::hallucinator::Hallucinator}};
 
 mod engine;
 mod players;
-use players::lunar::{Lunar, Rngesus};
 use players::lunar::{Lunar, Rngesus};
 
 fn main() {
