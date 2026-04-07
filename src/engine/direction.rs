@@ -29,4 +29,21 @@ impl Direction {
     pub const fn right() -> Self {
         Direction::PositiveX
     }
+
+    pub const fn left_of(&self) -> Self{
+        match self {
+            Direction::PositiveY => Direction::NegativeX,
+            Direction::NegativeY => Direction::PositiveX,
+            Direction::PositiveX => Direction::PositiveY,
+            Direction::NegativeX => Direction::NegativeY,
+        }
+    }
+    pub const fn right_of(&self) -> Self{
+        match self {
+            Direction::PositiveY => Direction::PositiveX,
+            Direction::NegativeY => Direction::NegativeX,
+            Direction::PositiveX => Direction::NegativeY,
+            Direction::NegativeX => Direction::PositiveY,
+        }
+    }
 }
