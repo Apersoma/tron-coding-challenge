@@ -5,7 +5,7 @@ mod players;
 use players::lunar::{Lunar, Rngesus};
 
 fn main() {
-    use players::example_bot::ExampleBot;
+    use players::hallucinator::Hallucinator;
     // use players::bot_template::BotTemplate;
     use players::stardustz_bots::ChaseBot;
     use players::stardustz_bots::SimpleSpaceFillBot;

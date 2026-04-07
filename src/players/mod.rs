@@ -1,4 +1,4 @@
 pub mod bot_template;
 pub mod example_bot;
 pub mod human_controlled_bot;
-pub mod lunar;pub mod stardustz_bots;
+pub mod lunar;pub mod hallucinator;
