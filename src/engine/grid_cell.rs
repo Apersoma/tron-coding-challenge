@@ -34,8 +34,8 @@ impl Display for GridCell {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", match self{
             GridCell::Empty => " .",
-            GridCell::Tail(player_id, _direction) if player_id.is_o() => " o",
-            GridCell::Tail(_player_id, _direction) => " x",
+            GridCell::Tail(player_id, _direction, _) if player_id.is_o() => " o",
+            GridCell::Tail(_player_id, _direction, _) => " x",
             GridCell::Head(_player_id, direction) => match direction {
                 Direction::PositiveY => " ^",
                 Direction::NegativeY => " v",
