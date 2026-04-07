@@ -2,6 +2,7 @@ use crate::engine::{grid::Grid, prelude::{Direction, GameState, GridPosition, Pl
 
 pub mod hallucinator;
 pub mod freedom_eater;
+pub mod rip_and_tear;
 
 #[derive(Eq)]
 struct CellScore(usize, GridPosition);
@@ -83,13 +84,58 @@ fn get_neighbors(pos: GridPosition, grid: &Grid) -> Vec<GridPosition> {
         .collect()
 }
 
+fn get_neighbors_or_goal_neighbor(pos: GridPosition, goal: GridPosition, grid: &Grid) -> Vec<GridPosition> {
+    pos.neighbors()
+        .filter(|neighbor| neighbor.is_empty(grid) || *neighbor == goal)
+        .collect()
+}
+
 fn pathfind(start: GridPosition, fruit_location: GridPosition, grid: &Grid) -> Option<Vec<GridPosition>> {
     a_star_pathfinding(
         start,
         fruit_location,
-        |pos| get_neighbors(pos, grid),
+        |pos| get_neighbors_or_goal_neighbor(pos, fruit_location, grid),
         base_heuristic
     )
+}
+
+fn shortest_distance(start: GridPosition, goal: GridPosition, grid: &Grid) -> Option<usize> {
+    pathfind(start, goal, grid).map(|path| path.len() - 1)
+}
+
+// This is a modified A* algorithm that finds the farthest reachable point from the current position.
+pub fn find_farthest_point(start: GridPosition, game_state: &GameState) -> CellScore {
+    use std::collections::{BinaryHeap, HashMap};
+    let grid = game_state.current_grid();
+
+    // This is usually a max-heap, but CellScore has reverse ordering, so it's basically a min-heap.
+    let mut open_set = BinaryHeap::new();
+
+    let mut came_from = HashMap::new();
+    let mut g_score = HashMap::new();
+
+    g_score.insert(start, 0);
+    open_set.push(CellScore(g_score[&start], start));
+    let mut farthest = CellScore(0, start);
+
+    while let Some(CellScore(score, current)) = open_set.pop() {
+        if score > farthest.0 {
+            farthest = CellScore(score, current);
+        }
+
+        for neighbor in get_neighbors(current, grid) {
+            let tentative_g_score = g_score[&current] + 1;
+            if tentative_g_score < *g_score.get(&neighbor).unwrap_or(&usize::MAX) {
+                came_from.insert(neighbor, current);
+                g_score.insert(neighbor, tentative_g_score);
+                if !open_set.iter().any(|&CellScore(_, pos)| pos == neighbor) {
+                    open_set.push(CellScore(g_score[&neighbor], neighbor));
+                }
+            }
+        }
+    }
+
+    farthest
 }
 
 // **** SOME OF THIS CODE COPIED FROM example_bot.rs!!! HOPE THIS ISNT CHEATING ****
@@ -123,25 +169,41 @@ trait JackBot {
             })
     }
 
+    fn ideal_non_hole_directions(&self, game_state: &GameState) -> impl Iterator<Item = Direction> {
+        let grid = game_state.current_grid();
+        let my_pos = grid.player_head_position(self.my_player_id());
+
+        self.ideal_directions(game_state)
+            .filter(move |d| {
+                my_pos.after_moved(*d).is_some_and(|p| {
+                    p.borders_cell(grid, |cell| cell.is_empty())
+                })
+            })
+    }
+
     fn direction_to(&self, game_state: &GameState, next_pos: GridPosition) -> Direction {
         let grid = game_state.current_grid();
-        let head_pos = grid.player_head_position(self.my_player_id());
-        
-        let (head_x, head_y): (usize, usize) = head_pos.into();
-        let (next_x, next_y): (usize, usize) = next_pos.into();
+        let my_pos = grid.player_head_position(self.my_player_id());
 
-        match (
-            next_x as isize - head_x as isize,
-            next_y as isize - head_y as isize
-        ) {
-            (0, 1) => Direction::PositiveY,
-            (0, -1) => Direction::NegativeY,
-            (1, 0) => Direction::PositiveX,
-            (-1, 0) => Direction::NegativeX,
-            _ => {
-                println!("Hallucinator: next position is not adjacent to head! This should never happen. Defaulting to moving right.");
-                Direction::NegativeY
-            },
-        }
+        direction_to(my_pos, next_pos)
+    }
+}
+
+fn direction_to(start: GridPosition, next_pos: GridPosition) -> Direction {
+    let (head_x, head_y): (usize, usize) = start.into();
+    let (next_x, next_y): (usize, usize) = next_pos.into();
+
+    match (
+        next_x as isize - head_x as isize,
+        next_y as isize - head_y as isize
+    ) {
+        (0, 1) => Direction::PositiveY,
+        (0, -1) => Direction::NegativeY,
+        (1, 0) => Direction::PositiveX,
+        (-1, 0) => Direction::NegativeX,
+        _ => {
+            println!("Hallucinator: next position is not adjacent to head! This should never happen. Defaulting to moving right.");
+            Direction::NegativeY
+        },
     }
 }
