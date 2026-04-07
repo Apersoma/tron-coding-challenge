@@ -80,11 +80,6 @@ impl GridPosition {
                 }
             })
     }
-
-    pub fn neighbors(&self) -> impl Iterator<Item = GridPosition> {
-        Direction::all()
-            .filter_map(move |d| self.after_moved(d))
-    }
 }
 
 impl From<GridPosition> for (usize, usize) {
