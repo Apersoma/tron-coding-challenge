@@ -9,21 +9,12 @@ mod rngesus;
 pub use rngesus::Rngesus;
 mod game;
 use game::*;
-
-#[allow(dead_code)]
-#[derive(Debug, PartialEq, Eq)]
-pub struct Lunar {
-    id: PlayerId
-}
-
-impl Bot for Lunar {
-    fn new(my_player_id: PlayerId) -> Self {
-        Self {id: my_player_id}
-    }
-    fn next_action(&mut self, game_state: &GameState) -> Direction {
-        todo!()
-    }
-}
+mod confused;
+pub use confused::Confused;
+mod scaredy_cat;
+pub use scaredy_cat::ScaredyCat;
+mod lunar;
+pub use lunar::Lunar;
 
 const ALL_DIRECTIONS: [Direction; 4] = Direction::all_slice();
 
@@ -44,6 +35,7 @@ impl GridPosition {
         unsafe { core::mem::transmute::<usize, Self>(i) }
     }
 }
+
 impl Grid {
     // fn solo_move_through(self, player_id: PlayerId, pos_x: usize, pos_y: usize, d: Direction) -> Option<Self> {
     //     let direction = Vel::from(d);

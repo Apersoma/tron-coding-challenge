@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use std::{hash::Hasher, time::Instant};
+use std::{hash::{Hash, Hasher}, time::Instant};
 
 use core::num::NonZero;
 
@@ -18,17 +18,17 @@ impl Default for RandPCG {
     }
 }
 
-
 impl RandPCG {
     #[inline]
     #[must_use]
     /// Creates a new random number generator with the specified seed.
-    pub fn new(seed: u64) -> RandPCG {
+    pub const fn new(seed: u64) -> RandPCG {
         Self {state: seed}
     }
 
     /// Creates a new random number generator with an arbitrary seed.
     #[must_use]
+    #[track_caller]
     pub fn new_entropic() -> RandPCG {
         let seed_seed = Instant::now();
         // SAFETY: the copy ensures no writes into unowned memory.
@@ -40,7 +40,16 @@ impl RandPCG {
         }.clone();
         let mut hasher = std::hash::DefaultHasher::new();
         hasher.write(&seed_seed_bytes);
+        core::panic::Location::caller().hash(&mut hasher);
         Self::new(hasher.finish())
+    }
+
+    pub const fn next_index(&mut self) -> usize {
+        self.next_u32() as usize
+    }
+
+    pub const fn next_direction(&mut self) -> crate::Direction {
+        super::ALL_DIRECTIONS[(self.next_u32() & 0b11) as usize]
     }
 
     #[must_use]

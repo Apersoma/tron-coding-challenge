@@ -2,6 +2,8 @@ use crate::engine::prelude::*;
 use core::hint::select_unpredictable;
 use core::mem;
 
+mod plane;
+pub use plane::*;
 
 #[derive(Debug, Hash, PartialEq, Eq)]
 pub enum Cell {
@@ -23,13 +25,6 @@ impl From<GridCell> for Cell {
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Pos(pub usize, pub usize);
-
-#[derive(Debug, Hash, PartialEq, Eq)]
-pub struct Plane {
-    pub grid: [[bool; GRID_SIZE]; GRID_SIZE], 
-    pub x: Pos,
-    pub o: Pos
-}
 
 impl From<Grid> for Plane {
     fn from(value: Grid) -> Self {
@@ -130,48 +125,8 @@ impl From<Vel> for Direction {
     }
 }
 
-
 pub enum GameEnd {
     Tie,
     WinO,
     WinX
-}
-
-impl Plane {
-    #[inline]
-    fn step(mut self, x_vel: Vel, x_pos: Pos, o_vel: Vel, o_pos: Pos) -> Result<Self, GameEnd> {
-        let (x_wish_x, mut x_crash) = x_pos.0.overflowing_add_signed(x_vel.0);
-        x_crash |= x_wish_x >= GRID_SIZE;
-        let (x_wish_y, x_crash_y) = x_pos.1.overflowing_add_signed(x_vel.1);
-        x_crash |= x_crash_y;
-        x_crash |= x_wish_y >= GRID_SIZE;
-        let x_wish = Pos(x_wish_x, x_wish_y);
-
-        let (o_wish_x, mut o_crash) = x_pos.0.overflowing_add_signed(x_vel.0);
-        o_crash |= o_wish_x >= GRID_SIZE;
-        let (o_wish_y, o_crash_y) = x_pos.1.overflowing_add_signed(x_vel.1);
-        o_crash |= o_crash_y;
-        o_crash |= o_wish_y >= GRID_SIZE;
-        let o_wish = Pos(o_wish_x, o_wish_y);
-
-        let head_to_head = (x_wish_x == o_wish_x) & (x_wish_y == o_wish_y);
-
-        // MUST BE `||`. Short circuit prevents oob.
-        let x_crash = x_crash || mem::replace(&mut self.grid[x_wish_x][x_wish_y], true);
-        let o_crash = o_crash || mem::replace(&mut self.grid[o_wish_x][o_wish_y], true);
-        if (x_crash | o_crash) | head_to_head {
-            return Err(
-                if (x_crash & o_crash) | head_to_head {
-                    GameEnd::Tie
-                } else if x_crash {
-                    GameEnd::WinO
-                } else {
-                    GameEnd::WinX
-                }
-            )
-        }
-        self.x = x_wish;
-        self.o = o_wish;
-        Ok(self)
-    }
 }
